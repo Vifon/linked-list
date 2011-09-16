@@ -10,14 +10,15 @@ int cmp(int a, int b)
 
 int main(int argc, char *argv[])
 {
-    List* l = listInit();
+    List l = listInit();
+    List p;
     listPushBackSort(l, 5 , cmp);
     listPushBackSort(l, 33, cmp);
     listPushBackSort(l, 9 , cmp);
     listPushBackSort(l, 1 , cmp);
     listPushBackSort(l, 99, cmp);
 
-    List* p = listBegin(l);
+    p = listBegin(l);
     while (p != NULL)
     {
         printf("%d\n", listVal(p));

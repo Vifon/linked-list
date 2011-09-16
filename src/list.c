@@ -1,9 +1,9 @@
 #include "list.h"
 #include <stdlib.h>
 
-List* listInit()
+List listInit()
 {
-    List* root   = newListNode();
+    List root   = newListNode();
 
     /* MODIFY ME */
     root->v      = 0x80000000;
@@ -15,27 +15,27 @@ List* listInit()
     return root;
 }
 
-List* listRbegin(List* root)
+List listRbegin(List root)
 {
     while (root->n != NULL)
         NEXT(root);
     return root;
 }
 
-void listFree(List* root)
+void listFree(List root)
 {
     if (root->n != NULL)
         listFree(root->n);
     free(root);
 }
 
-void listPushBack(List* root, T val)
+void listPushBack(List root, T val)
 {
     root = listRbegin(root);
     listAddAfter(root, val);
 }
 
-void listPushBackSort(List* root, T val, int (*compare)(T, T))
+void listPushBackSort(List root, T val, int (*compare)(T, T))
 {
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
     while (root->n != NULL && compare(root->n->v, val) < 0)
@@ -43,9 +43,9 @@ void listPushBackSort(List* root, T val, int (*compare)(T, T))
     listAddAfter(root, val);
 }
 
-void listAddAfter(List* place, T val)
+void listAddAfter(List place, T val)
 {
-    List* ptr;
+    List ptr;
     ptr             = newListNode();
     ptr->isRoot     = 0;
     ptr->v          = val;
@@ -59,7 +59,7 @@ void listAddAfter(List* place, T val)
     place->n        = ptr;
 }
 
-List* listGet(List* root, int n)
+List listGet(List root, int n)
 {
     int i;
     for (i = 0; i <= n; ++i)    /* intentional apparent off-by-one! */
@@ -71,7 +71,7 @@ List* listGet(List* root, int n)
     return root;
 }
 
-void listRemove(List* element)
+void listRemove(List element)
 {
     if (element->p != NULL)
         element->p->n = element->n;
@@ -80,7 +80,7 @@ void listRemove(List* element)
     free(element);
 }
 
-int listRemoveN(List* root, int n)
+int listRemoveN(List root, int n)
 {
     root = listGet(root, n);
     if (root == NULL)
@@ -89,11 +89,11 @@ int listRemoveN(List* root, int n)
     return 1;
 }
 
-int listRemoveVal(List* root, T val)
+int listRemoveVal(List root, T val)
 {
-    for (; root->v != val; NEXT(root))
-        if (root == NULL)
-            return 0;
+    for (; root != NULL && root->v != val; NEXT(root));
+    if (root == NULL)
+        return 0;
     listRemove(root);
     return 1;
 }
