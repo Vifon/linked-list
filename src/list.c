@@ -17,25 +17,34 @@ List listInit()
 
 List listRbegin(List root)
 {
-    while (root->n != NULL)
+    NEXT(root);
+    while (root != NULL && root->n != NULL)
         NEXT(root);
     return root;
 }
 
-void listFree(List root)
+void listFreeReal(List* root)
 {
-    if (root->n != NULL)
-        listFree(root->n);
-    free(root);
+    if (*root == NULL)
+        return;
+    listFreeReal(&(*root)->n);
+    free(*root);
+    *root = NULL;
 }
 
 void listPushBack(List root, T val)
 {
-    root = listRbegin(root);
+    if (!listIsEmpty(root))
+        root = listRbegin(root);
     listAddAfter(root, val);
 }
 
-void listPushBackSort(List root, T val, int (*compare)(T, T))
+void listPushFront(List root, T val)
+{
+    listAddAfter(root, val);
+}
+
+void listPushSort(List root, T val, int (*compare)(T, T))
 {
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
     while (root->n != NULL && compare(root->n->v, val) < 0)
@@ -71,8 +80,10 @@ List listGet(List root, int n)
     return root;
 }
 
-void listRemove(List element)
+void listRemove(List root, List element)
 {
+    if (root->n == element)
+        root->n = element->n;
     if (element->p != NULL)
         element->p->n = element->n;
     if (element->n != NULL)
@@ -82,18 +93,70 @@ void listRemove(List element)
 
 int listRemoveN(List root, int n)
 {
-    root = listGet(root, n);
-    if (root == NULL)
+    List element = listGet(root, n);
+    if (element == NULL)
         return 0;               /* out-of-list exception */
-    listRemove(root);
+    listRemove(root, element);
     return 1;
 }
 
 int listRemoveVal(List root, T val)
 {
-    for (; root != NULL && root->v != val; NEXT(root));
-    if (root == NULL)
+    List element = root;
+    for (; element != NULL && element->v != val; NEXT(element));
+    if (element == NULL)
         return 0;
-    listRemove(root);
+    listRemove(root, element);
     return 1;
+}
+
+int listLength(List root)
+{
+    int i = 0;
+    NEXT(root);
+    while (root != NULL)
+    {
+        NEXT(root);
+        ++i;
+    }
+    return i;
+}
+
+int listIsEmpty(List root)
+{
+    return root->n == NULL;
+}
+
+int listPopBack(List root)
+{
+    List last = listRbegin(root);
+    if (last != NULL)
+    {
+        listRemove(root, last);
+        return 1;
+    }
+    else
+        return 0;
+}
+
+int listPopFront(List root)
+{
+    List last = listBegin(root);
+    if (last != NULL)
+    {
+        listRemove(root, last);
+        return 1;
+    }
+    else
+        return 0;
+}
+
+List listCopy(List source)
+{
+    List copy = listInit();
+    while ((NEXT(source)))
+    {
+        listPushBack(copy, listVal(source));
+    }
+    return copy;
 }

@@ -1,3 +1,4 @@
+// File: tests.hpp
 #ifndef _TESTS_H_
 #define _TESTS_H_
 
@@ -10,14 +11,17 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(ListTest);
     CPPUNIT_TEST(initialization);
     CPPUNIT_TEST(movement);
-    CPPUNIT_TEST(addingNewElements);
-    CPPUNIT_TEST(addingNewSortedElements);
+    CPPUNIT_TEST(pushBack);
+    CPPUNIT_TEST(pushFront);
+    CPPUNIT_TEST(pushSort);
     CPPUNIT_TEST(getNthElement);
     CPPUNIT_TEST(removeByNumber);
     CPPUNIT_TEST(removeByValue);
     CPPUNIT_TEST(removeByNonExistentValue);
     CPPUNIT_TEST(length);
     CPPUNIT_TEST(pop);
+    CPPUNIT_TEST(freeEmpty);
+    CPPUNIT_TEST(copy);
     CPPUNIT_TEST_SUITE_END();
   public:
     void setUp();
@@ -26,14 +30,17 @@ class ListTest : public CPPUNIT_NS::TestFixture
   protected:
     void initialization();
     void movement();
-    void addingNewElements();
-    void addingNewSortedElements();
+    void pushBack();
+    void pushFront();
+    void pushSort();
     void removeByNumber();
     void removeByValue();
     void removeByNonExistentValue();
     void getNthElement();
     void length();
     void pop();
+    void freeEmpty();
+    void copy();
 
   private:
     List l;

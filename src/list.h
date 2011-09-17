@@ -25,17 +25,24 @@ typedef struct list
 #define listVal(A) A->v
 #define listBegin(A) A->n
 #define newListNode() (List) malloc(sizeof(struct list))
+#define listFree(A) listFreeReal(&A)
 
 List listRbegin(List root);
 List listInit();
 void listPushBack(List root, T val);
-void listPushBackSort(List root, T val, int (*compare)(T, T));
+void listPushFront(List root, T val);
+void listPushSort(List root, T val, int (*compare)(T, T));
 void listAddAfter(List place, T val);
-void listFree(List root);
+void listFreeReal(List* root);
 List listGet(List root, int n);
-void listRemove(List element);
+void listRemove(List root, List element);
 int  listRemoveN(List root, int n);
 int  listRemoveVal(List root, T val);
+int  listLength(List root);
+int  listIsEmpty(List root);
+int  listPopBack(List root);
+int  listPopFront(List root);
+List listCopy(List source);
 
 
  #ifdef __cplusplus
