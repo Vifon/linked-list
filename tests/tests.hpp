@@ -16,6 +16,8 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(removeByNumber);
     CPPUNIT_TEST(removeByValue);
     CPPUNIT_TEST(removeByNonExistentValue);
+    CPPUNIT_TEST(length);
+    CPPUNIT_TEST(pop);
     CPPUNIT_TEST_SUITE_END();
   public:
     void setUp();
@@ -30,9 +32,11 @@ class ListTest : public CPPUNIT_NS::TestFixture
     void removeByValue();
     void removeByNonExistentValue();
     void getNthElement();
+    void length();
+    void pop();
 
   private:
-    List l[1];
+    List l;
 };
 
 #endif

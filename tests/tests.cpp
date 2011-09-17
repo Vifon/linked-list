@@ -5,43 +5,34 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ListTest);
 
 void ListTest::setUp()
 {
-    for (int i = 0; i < 1; ++i)
-    {
-        l[i] = listInit();
-    }
+    l = listInit();
 }
 
 void ListTest::tearDown()
 {
-    for (int i = 0; i < 1; ++i)
-    {
-        listFree(l[i]);
-    }
+    listFree(l);
 }
 
 void ListTest::initialization()
 {
-    for (int i = 0; i < 1; ++i)
-    {
-        CPPUNIT_ASSERT(l[i] != NULL);
-        CPPUNIT_ASSERT(l[i]->n == NULL);
-    }
+    CPPUNIT_ASSERT(l != NULL);
+    CPPUNIT_ASSERT(l->n == NULL);
 }
 
 void ListTest::movement()
 {
-    listPushBack(l[0], 5);
-    listPushBack(l[0], 33);
-    listPushBack(l[0], 9);
-    listPushBack(l[0], 5);
-    listPushBack(l[0], 99);
+    listPushBack(l, 5);
+    listPushBack(l, 33);
+    listPushBack(l, 9);
+    listPushBack(l, 5);
+    listPushBack(l, 99);
 
-    List a = listBegin(l[0]);
+    List a = listBegin(l);
     NEXT(a); NEXT(a); NEXT(a);
-    CPPUNIT_ASSERT_EQUAL(l[0]->n->n->n->n, a);
+    CPPUNIT_ASSERT_EQUAL(l->n->n->n->n, a);
     CPPUNIT_ASSERT_EQUAL(5, listVal(a));
     PREV(a);
-    CPPUNIT_ASSERT_EQUAL(l[0]->n->n->n, a);
+    CPPUNIT_ASSERT_EQUAL(l->n->n->n, a);
 }
 
 void ListTest::addingNewElements()
@@ -49,20 +40,20 @@ void ListTest::addingNewElements()
     std::list<int> sl;
 
     sl.push_back(5);
-    listPushBack(l[0], 5);
+    listPushBack(l, 5);
     sl.push_back(33);
-    listPushBack(l[0], 33);
+    listPushBack(l, 33);
     sl.push_back(9);
-    listPushBack(l[0], 9);
+    listPushBack(l, 9);
     sl.push_back(5);
-    listPushBack(l[0], 5);
+    listPushBack(l, 5);
     sl.push_back(99);
-    listPushBack(l[0], 99);
+    listPushBack(l, 99);
 
     std::list<int>::iterator it1;
     List it2;
 
-    for (it1 = sl.begin(), it2 = listBegin(l[0]);
+    for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
          ++it1, NEXT(it2))
     {
@@ -83,22 +74,22 @@ void ListTest::addingNewSortedElements()
     std::list<int> sl;
 
     sl.push_back(5);
-    listPushBackSort(l[0], 5, cmp);
+    listPushBackSort(l, 5, cmp);
     sl.push_back(33);
-    listPushBackSort(l[0], 33, cmp);
+    listPushBackSort(l, 33, cmp);
     sl.push_back(9);
-    listPushBackSort(l[0], 9, cmp);
+    listPushBackSort(l, 9, cmp);
     sl.push_back(5);
-    listPushBackSort(l[0], 5, cmp);
+    listPushBackSort(l, 5, cmp);
     sl.push_back(99);
-    listPushBackSort(l[0], 99, cmp);
+    listPushBackSort(l, 99, cmp);
 
     sl.sort();
 
     std::list<int>::iterator it1;
     List it2;
 
-    for (it1 = sl.begin(), it2 = listBegin(l[0]);
+    for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
          ++it1, NEXT(it2))
     {
@@ -112,9 +103,9 @@ void ListTest::removeByNumber()
 {
     addingNewElements();
 
-    listRemoveN(l[0], 3);
+    CPPUNIT_ASSERT(listRemoveN(l, 3));
 
-    List p = listBegin(l[0]);
+    List p = listBegin(l);
     CPPUNIT_ASSERT_EQUAL(5, listVal(p));
     NEXT(p);
     CPPUNIT_ASSERT_EQUAL(33, listVal(p));
@@ -124,15 +115,20 @@ void ListTest::removeByNumber()
     CPPUNIT_ASSERT_EQUAL(99, listVal(p));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
+
+    CPPUNIT_ASSERT(listRemoveN(l, 0));
+
+    CPPUNIT_ASSERT(l->n->p == NULL);
+    CPPUNIT_ASSERT_EQUAL(33, l->n->v);
 }
 
 void ListTest::removeByValue()
 {
     addingNewElements();
 
-    listRemoveVal(l[0], 33);
+    CPPUNIT_ASSERT(listRemoveVal(l, 33));
 
-    List p = listBegin(l[0]);
+    List p = listBegin(l);
     CPPUNIT_ASSERT_EQUAL(5, listVal(p));
     NEXT(p);
     CPPUNIT_ASSERT_EQUAL(9, listVal(p));
@@ -142,15 +138,20 @@ void ListTest::removeByValue()
     CPPUNIT_ASSERT_EQUAL(99, listVal(p));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
+
+    CPPUNIT_ASSERT(listRemoveVal(l, 5));
+
+    CPPUNIT_ASSERT(l->n->p == NULL);
+    CPPUNIT_ASSERT_EQUAL(9, l->n->v);
 }
 
 void ListTest::removeByNonExistentValue()
 {
     addingNewElements();
 
-    CPPUNIT_ASSERT(listRemoveVal(l[0], 17) == false);
+    CPPUNIT_ASSERT(listRemoveVal(l, 17) == false);
 
-    List p = listBegin(l[0]);
+    List p = listBegin(l);
     CPPUNIT_ASSERT_EQUAL(5, listVal(p));
     NEXT(p);
     CPPUNIT_ASSERT_EQUAL(33, listVal(p));
@@ -166,11 +167,48 @@ void ListTest::removeByNonExistentValue()
 
 void ListTest::getNthElement()
 {
-    listPushBack(l[0], 5);
-    listPushBack(l[0], 33);
-    listPushBack(l[0], 9);
-    listPushBack(l[0], 5);
-    listPushBack(l[0], 99);
+    listPushBack(l, 5);
+    listPushBack(l, 33);
+    listPushBack(l, 9);
+    listPushBack(l, 5);
+    listPushBack(l, 99);
 
-    CPPUNIT_ASSERT_EQUAL(l[0]->n->n->n, listGet(l[0], 2));
+    CPPUNIT_ASSERT_EQUAL(l->n->n->n, listGet(l, 2));
+}
+
+void ListTest::length()
+{
+    listPushBack(l, 5);
+    listPushBack(l, 33);
+    listPushBack(l, 9);
+    listPushBack(l, 5);
+    listPushBack(l, 99);
+
+    CPPUNIT_ASSERT_EQUAL(5, listLength(l));
+}
+
+void ListTest::pop()
+{
+    listPushBack(l, 5);
+    listPushBack(l, 33);
+    listPushBack(l, 9);
+    listPushBack(l, 5);
+    listPushBack(l, 99);
+
+    listPop(l);
+    CPPUNIT_ASSERT(l->n->n->n->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(5, l->n->n->n->n->v);
+    listPop(l);
+    CPPUNIT_ASSERT(l->n->n->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(9, l->n->n->n->v);
+    listPop(l);
+    CPPUNIT_ASSERT(l->n->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(33, l->n->n->v);
+    listPop(l);
+    CPPUNIT_ASSERT(l->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(5, l->n->v);
+    listPop(l);
+    CPPUNIT_ASSERT(listIsEmpty(l));
+    CPPUNIT_ASSERT(!listPop(l));
+    CPPUNIT_ASSERT(listIsEmpty(l));
 }
