@@ -253,6 +253,19 @@ void ListTest::freeEmpty()
     listFree(l);
 }
 
+void ListTest::empty()
+{
+    listPushBack(l, 5);
+    listPushBack(l, 33);
+    listPushBack(l, 9);
+    listPushBack(l, 5);
+    listPushBack(l, 99);
+
+    listEmpty(l);
+    CPPUNIT_ASSERT(l != NULL);
+    CPPUNIT_ASSERT(l->n == NULL);
+}
+
 void ListTest::copy()
 {
     listPushBack(l, 5);

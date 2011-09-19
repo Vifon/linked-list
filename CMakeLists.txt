@@ -12,4 +12,3 @@ if (cfg STREQUAL "unittest")
 else()
   add_subdirectory(src)
 endif()
-

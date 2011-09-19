@@ -21,6 +21,7 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(length);
     CPPUNIT_TEST(pop);
     CPPUNIT_TEST(freeEmpty);
+    CPPUNIT_TEST(empty);
     CPPUNIT_TEST(copy);
     CPPUNIT_TEST_SUITE_END();
   public:
@@ -40,6 +41,7 @@ class ListTest : public CPPUNIT_NS::TestFixture
     void length();
     void pop();
     void freeEmpty();
+    void empty();
     void copy();
 
   private:

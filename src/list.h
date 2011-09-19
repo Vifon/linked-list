@@ -1,3 +1,4 @@
+/* File: list.h */
 #ifndef _LIST_H_
 #define _LIST_H_
 
@@ -40,6 +41,7 @@ int  listRemoveN(List root, int n);
 int  listRemoveVal(List root, T val);
 int  listLength(List root);
 int  listIsEmpty(List root);
+void listEmpty(List root);
 int  listPopBack(List root);
 int  listPopFront(List root);
 List listCopy(List source);

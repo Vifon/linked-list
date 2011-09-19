@@ -1,3 +1,4 @@
+/* File: list.c */
 #include "list.h"
 #include <stdlib.h>
 
@@ -125,6 +126,11 @@ int listLength(List root)
 int listIsEmpty(List root)
 {
     return root->n == NULL;
+}
+
+void listEmpty(List root)
+{
+    listFree(root->n);
 }
 
 int listPopBack(List root)
