@@ -1,3 +1,4 @@
+
 /* File: list.c */
 #include "list.h"
 #include <stdlib.h>
@@ -5,10 +6,6 @@
 List listInit()
 {
     List root   = newListNode();
-
-    /* MODIFY ME */
-    root->v      = 0x80000000;
-    /* MODIFY ME */
 
     root->isRoot = 1;
     root->n      = NULL;
