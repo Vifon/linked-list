@@ -1,4 +1,3 @@
-
 /* File: list.c */
 #include "list.h"
 #include <stdlib.h>
@@ -42,7 +41,7 @@ void listPushFront(List root, T val)
     listAddAfter(root, val);
 }
 
-void listPushSort(List root, T val, int (*compare)(T, T))
+void listPushSort(List root, T val, int (*compare)(const T, const T))
 {
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
     while (root->n != NULL && compare(root->n->v, val) < 0)
@@ -100,9 +99,19 @@ int listRemoveN(List root, int n)
 
 int listRemoveVal(List root, T val)
 {
-    List element = root;
+    List element = listBegin(root);
     for (; element != NULL && element->v != val; NEXT(element));
     if (element == NULL)
+        return 0;
+    listRemove(root, element);
+    return 1;
+}
+
+int  listRemoveValCustom(List root, T val, int (*compare)(const T, const T))
+{
+    List element = listBegin(root);
+    for (; element != NULL && element->v != NULL && compare(element->v, val) == 0; NEXT(element));
+    if (element == NULL || element->v == NULL)
         return 0;
     listRemove(root, element);
     return 1;

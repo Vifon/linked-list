@@ -4,6 +4,7 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <regex.h>
 #include "../src/list.h"
 
 class ListTest : public CPPUNIT_NS::TestFixture
@@ -23,6 +24,8 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(freeEmpty);
     CPPUNIT_TEST(empty);
     CPPUNIT_TEST(copy);
+    CPPUNIT_TEST(regex);
+    CPPUNIT_TEST(regexDelete);
     CPPUNIT_TEST_SUITE_END();
   public:
     void setUp();
@@ -43,6 +46,8 @@ class ListTest : public CPPUNIT_NS::TestFixture
     void freeEmpty();
     void empty();
     void copy();
+    void regex();
+    void regexDelete();
 
   private:
     List l;
