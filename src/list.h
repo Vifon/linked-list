@@ -8,13 +8,9 @@
  #endif
 
 
-/* MODIFY ME */
-typedef char* T;
-/* MODIFY ME */
-
 typedef struct list
 {
-    T            v;
+    void*        v;
     int          isRoot;        /* true only in the first one */
     struct list* n;
     struct list* p;
@@ -23,48 +19,29 @@ typedef struct list
 
 #define NEXT(A) A = A->n
 #define PREV(A) A = A->p
-#define listVal(A) A->v
+#define listVal(A, T) *(T*) A->v
 #define listBegin(A) A->n
 #define newListNode() (List) malloc(sizeof(struct list))
-#define listFree(A) listFreeReal(&A)
 
 List listRbegin(List root);
 List listInit();
-void listPushBack(List root, T val);
-void listPushFront(List root, T val);
-void listPushSort(List root, T val, int (*compare)(const T, const T));
-void listAddAfter(List place, T val);
-void listFreeReal(List* root);
+void listPushBack(List root, void* val);
+void listPushFront(List root, void* val);
+void listPushSort(List root, void* val, int (*compare)(const void*, const void*));
+void listAddAfter(List place, void* val);
+void listFree(List root);
 List listGet(List root, int n);
+List listGetVal(List root, void* val, int (*compare)(const void*, const void*));
 void listRemove(List root, List element);
 int  listRemoveN(List root, int n);
-int  listRemoveVal(List root, T val);
-int  listRemoveValCustom(List root, T val, int (*compare)(const T, const T));
+int  listRemoveVal(List root, void* val, int (*compare)(const void*, const void*));
 int  listLength(List root);
 int  listIsEmpty(List root);
 void listEmpty(List root);
 int  listPopBack(List root);
 int  listPopFront(List root);
 List listCopy(List source);
-#ifdef _REGEX_H
-List listGetRegex(List root, regex_t* re)
-{
-    List element = listBegin(root);
-    for (; element != NULL && element->v != NULL && regexec(re, element->v, 0, NULL, 0); NEXT(element));
-    return element;
-}
-void listRemoveRegexAll(List root, regex_t* re)
-{
-    List element = listBegin(root);
-    while (element != NULL)
-    {
-        element = listBegin(root);
-        for (; element != NULL && element->v != NULL && regexec(re, element->v, 0, NULL, 0); NEXT(element));
-        if (element != NULL)
-            listRemove(root, element);
-    }
-}
-#endif
+void listForeach(List root, void (*fun)(void*, void*), void* arg);
 
 
  #ifdef __cplusplus

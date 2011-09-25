@@ -20,28 +20,27 @@ List listRbegin(List root)
     return root;
 }
 
-void listFreeReal(List* root)
+void listFree(List root)
 {
-    if (*root == NULL)
+    if (root == NULL)
         return;
-    listFreeReal(&(*root)->n);
-    free(*root);
-    *root = NULL;
+    listFree(root->n);
+    free(root);
 }
 
-void listPushBack(List root, T val)
+void listPushBack(List root, void* val)
 {
     if (!listIsEmpty(root))
         root = listRbegin(root);
     listAddAfter(root, val);
 }
 
-void listPushFront(List root, T val)
+void listPushFront(List root, void* val)
 {
     listAddAfter(root, val);
 }
 
-void listPushSort(List root, T val, int (*compare)(const T, const T))
+void listPushSort(List root, void* val, int (*compare)(const void*, const void*))
 {
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
     while (root->n != NULL && compare(root->n->v, val) < 0)
@@ -49,7 +48,7 @@ void listPushSort(List root, T val, int (*compare)(const T, const T))
     listAddAfter(root, val);
 }
 
-void listAddAfter(List place, T val)
+void listAddAfter(List place, void* val)
 {
     List ptr;
     ptr             = newListNode();
@@ -77,6 +76,14 @@ List listGet(List root, int n)
     return root;
 }
 
+/* compare should return -1 on lesser, 0 on equal and 1 on greater */
+List listGetVal(List root, void* val, int (*compare)(const void*, const void*))
+{
+    List element = listBegin(root);
+    for (; element != NULL && element->v != NULL && compare(element->v, val) != 0; NEXT(element));
+    return element;
+}
+
 void listRemove(List root, List element)
 {
     if (root->n == element)
@@ -97,20 +104,10 @@ int listRemoveN(List root, int n)
     return 1;
 }
 
-int listRemoveVal(List root, T val)
+/* compare should return -1 on lesser, 0 on equal and 1 on greater */
+int listRemoveVal(List root, void* val, int (*compare)(const void*, const void*))
 {
-    List element = listBegin(root);
-    for (; element != NULL && element->v != val; NEXT(element));
-    if (element == NULL)
-        return 0;
-    listRemove(root, element);
-    return 1;
-}
-
-int  listRemoveValCustom(List root, T val, int (*compare)(const T, const T))
-{
-    List element = listBegin(root);
-    for (; element != NULL && element->v != NULL && compare(element->v, val) == 0; NEXT(element));
+    List element = listGetVal(root, val, compare);
     if (element == NULL || element->v == NULL)
         return 0;
     listRemove(root, element);
@@ -137,6 +134,7 @@ int listIsEmpty(List root)
 void listEmpty(List root)
 {
     listFree(root->n);
+    root->n = NULL;
 }
 
 int listPopBack(List root)
@@ -168,7 +166,17 @@ List listCopy(List source)
     List copy = listInit();
     while ((NEXT(source)))
     {
-        listPushBack(copy, listVal(source));
+        listPushBack(copy, source->v);
     }
     return copy;
+}
+
+void listForeach(List root, void (*fun)(void*, void*), void* arg)
+{
+    root = listBegin(root);
+    while (root != NULL)
+    {
+        fun(root->v, arg);
+        NEXT(root);
+    }
 }

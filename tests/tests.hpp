@@ -4,7 +4,7 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <regex.h>
+// #include <regex.h>
 #include "../src/list.h"
 
 class ListTest : public CPPUNIT_NS::TestFixture
@@ -12,20 +12,24 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE(ListTest);
     CPPUNIT_TEST(initialization);
     CPPUNIT_TEST(movement);
-    CPPUNIT_TEST(pushBack);
-    CPPUNIT_TEST(pushFront);
-    CPPUNIT_TEST(pushSort);
-    CPPUNIT_TEST(getNthElement);
-    CPPUNIT_TEST(removeByNumber);
-    CPPUNIT_TEST(removeByValue);
-    CPPUNIT_TEST(removeByNonExistentValue);
-    CPPUNIT_TEST(length);
-    CPPUNIT_TEST(pop);
-    CPPUNIT_TEST(freeEmpty);
-    CPPUNIT_TEST(empty);
-    CPPUNIT_TEST(copy);
+    CPPUNIT_TEST(stringPushBack);
+    CPPUNIT_TEST(stringPushFront);
+    CPPUNIT_TEST(intPushSort);
+    CPPUNIT_TEST(stringPushSort);
+    CPPUNIT_TEST(stringGetNthElement);
+    CPPUNIT_TEST(stringRemoveByNumber);
+    CPPUNIT_TEST(stringRemoveByValue);
+    CPPUNIT_TEST(stringRemoveByNonExistentValue);
+    CPPUNIT_TEST(stringLength);
+    CPPUNIT_TEST(stringPop);
+    CPPUNIT_TEST(stringFreeEmpty);
+    CPPUNIT_TEST(stringEmpty);
+    CPPUNIT_TEST(stringCopy);
+    CPPUNIT_TEST(foreach);
+#ifdef _REGEX_H
     CPPUNIT_TEST(regex);
     CPPUNIT_TEST(regexDelete);
+#endif
     CPPUNIT_TEST_SUITE_END();
   public:
     void setUp();
@@ -34,20 +38,24 @@ class ListTest : public CPPUNIT_NS::TestFixture
   protected:
     void initialization();
     void movement();
-    void pushBack();
-    void pushFront();
-    void pushSort();
-    void removeByNumber();
-    void removeByValue();
-    void removeByNonExistentValue();
-    void getNthElement();
-    void length();
-    void pop();
-    void freeEmpty();
-    void empty();
-    void copy();
+    void stringPushBack();
+    void stringPushFront();
+    void intPushSort();
+    void stringPushSort();
+    void stringRemoveByNumber();
+    void stringRemoveByValue();
+    void stringRemoveByNonExistentValue();
+    void stringGetNthElement();
+    void stringLength();
+    void stringPop();
+    void stringFreeEmpty();
+    void stringEmpty();
+    void stringCopy();
+    void foreach();
+#ifdef _REGEX_H
     void regex();
     void regexDelete();
+#endif
 
   private:
     List l;

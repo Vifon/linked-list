@@ -23,224 +23,258 @@ void ListTest::initialization()
 
 void ListTest::movement()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     List a = listBegin(l);
     NEXT(a); NEXT(a); NEXT(a);
     CPPUNIT_ASSERT_EQUAL(l->n->n->n->n, a);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(a)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(a, char)));
     PREV(a);
     CPPUNIT_ASSERT_EQUAL(l->n->n->n, a);
 }
 
-void ListTest::pushBack()
+void ListTest::stringPushBack()
 {
-    std::list<T> sl;
+    std::list<char*> sl;
 
     sl.push_back("foo");
-    listPushBack(l, "foo");
+    listPushBack(l, (void*) "foo");
     sl.push_back("bar");
-    listPushBack(l, "bar");
+    listPushBack(l, (void*) "bar");
     sl.push_back("baz");
-    listPushBack(l, "baz");
+    listPushBack(l, (void*) "baz");
     sl.push_back("qux");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "qux");
 
-    std::list<T>::iterator it1;
+    std::list<char*>::iterator it1;
     List it2;
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
          ++it1, NEXT(it2))
     {
-        CPPUNIT_ASSERT_EQUAL(*it1, listVal(it2));
+        CPPUNIT_ASSERT_EQUAL(*it1, &listVal(it2, char));
     }
     CPPUNIT_ASSERT(it1 == sl.end());
     CPPUNIT_ASSERT(it2 == NULL);
 }
 
-void ListTest::pushFront()
+void ListTest::stringPushFront()
 {
-    std::list<T> sl;
+    std::list<char*> sl;
 
     sl.push_front("foo");
-    listPushFront(l, "foo");
+    listPushFront(l, (void*) "foo");
     sl.push_front("bar");
-    listPushFront(l, "bar");
+    listPushFront(l, (void*) "bar");
     sl.push_front("baz");
-    listPushFront(l, "baz");
+    listPushFront(l, (void*) "baz");
     sl.push_front("qux");
-    listPushFront(l, "qux");
+    listPushFront(l, (void*) "qux");
 
-    std::list<T>::iterator it1;
+    std::list<char*>::iterator it1;
     List it2;
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
          ++it1, NEXT(it2))
     {
-        CPPUNIT_ASSERT_EQUAL(*it1, listVal(it2));
+        CPPUNIT_ASSERT_EQUAL(*it1, &listVal(it2, char));
     }
     CPPUNIT_ASSERT(it1 == sl.end());
     CPPUNIT_ASSERT(it2 == NULL);
 }
 
-int cmp(int a, int b)
+int cmp(const void* a, const void* b)
 {
-    if      (a < b) return -1;
-    else if (a > b) return 1;
+    if      (*(int*) a < *(int*) b) return -1;
+    else if (*(int*) a > *(int*) b) return 1;
     else            return 0;
 }
-int mystrcmp1(const T a, const T b)
+void freeint(void* a, void*)
 {
-    int n = strcmp(a, b);
+    delete (int*) a;
+}
+void ListTest::intPushSort()
+{
+    std::list<int> sl;
+
+    sl.push_back(5);
+    listPushSort(l, (void*) new int(5), cmp);
+    sl.push_back(33);
+    listPushSort(l, (void*) new int(33), cmp);
+    sl.push_back(8);
+    listPushSort(l, (void*) new int(8), cmp);
+    sl.push_back(1);
+    listPushSort(l, (void*) new int(1), cmp);
+
+    sl.sort();
+
+    std::list<int>::iterator it1;
+    List it2;
+
+    for (it1 = sl.begin(), it2 = listBegin(l);
+         it1 != sl.end() && it2 != NULL;
+         ++it1, NEXT(it2))
+    {
+        CPPUNIT_ASSERT(*it1 == listVal(it2, int));
+    }
+    CPPUNIT_ASSERT(it1 == sl.end());
+    CPPUNIT_ASSERT(it2 == NULL);
+
+    listForeach(l, freeint, NULL);
+}
+
+int mystrcmp1(const void* a, const void* b)
+{
+    int n = strcmp((char*) a, (char*) b);
     if      (n < 0) return -1;
     else if (n > 0) return 1;
     else            return 0;
 }
-bool mystrcmp2(const T a, const T b)
+bool mystrcmp2(const void* a, const void* b)
 {
-    int n = strcmp(a, b);
+    int n = strcmp((char*) a, (char*) b);
     if    (n < 0) return true;
     else          return false;
 }
-void ListTest::pushSort()
+void ListTest::stringPushSort()
 {
-    std::list<T> sl;
+    std::list<char*> sl;
 
     sl.push_back("foo");
-    listPushSort(l, "foo", mystrcmp1);
+    listPushSort(l, (void*) "foo", mystrcmp1);
     sl.push_back("bar");
-    listPushSort(l, "bar", mystrcmp1);
+    listPushSort(l, (void*) "bar", mystrcmp1);
     sl.push_back("baz");
-    listPushSort(l, "baz", mystrcmp1);
+    listPushSort(l, (void*) "baz", mystrcmp1);
     sl.push_back("qux");
-    listPushSort(l, "qux", mystrcmp1);
+    listPushSort(l, (void*) "qux", mystrcmp1);
 
     sl.sort(mystrcmp2);
 
-    std::list<T>::iterator it1;
+    std::list<char*>::iterator it1;
     List it2;
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
          ++it1, NEXT(it2))
     {
-        CPPUNIT_ASSERT(!strcmp(*it1, listVal(it2)));
+        CPPUNIT_ASSERT(!strcmp(*it1, &listVal(it2, char)));
     }
     CPPUNIT_ASSERT(it1 == sl.end());
     CPPUNIT_ASSERT(it2 == NULL);
 }
 
-void ListTest::removeByNumber()
+void ListTest::stringRemoveByNumber()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     CPPUNIT_ASSERT(listRemoveN(l, 2));
 
     List p = listBegin(l);
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("bar", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("bar", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 
     CPPUNIT_ASSERT(listRemoveN(l, 0));
 
     CPPUNIT_ASSERT(l->n->p == NULL);
-    CPPUNIT_ASSERT(!strcmp("bar", l->n->v));
+    CPPUNIT_ASSERT(!strcmp("bar", (char*) l->n->v));
 }
 
-void ListTest::removeByValue()
+void ListTest::stringRemoveByValue()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
-    CPPUNIT_ASSERT(listRemoveVal(l, "bar"));
+    CPPUNIT_ASSERT(listRemoveVal(l, (void*) "bar", mystrcmp1));
 
     List p = listBegin(l);
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("baz", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 
-    CPPUNIT_ASSERT(listRemoveVal(l, "foo"));
+    CPPUNIT_ASSERT(listRemoveVal(l, (void*) "foo", mystrcmp1));
 
     CPPUNIT_ASSERT(l->n->p == NULL);
-    CPPUNIT_ASSERT(!strcmp("baz", l->n->v));
+    CPPUNIT_ASSERT(!strcmp("baz", (char*) l->n->v));
 }
 
-void ListTest::removeByNonExistentValue()
+void ListTest::stringRemoveByNonExistentValue()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
-    CPPUNIT_ASSERT(listRemoveVal(l, "cycki") == false);
+    CPPUNIT_ASSERT(listRemoveVal(l, (void*) "cycki", mystrcmp1) == false);
 
     List p = listBegin(l);
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("bar", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("bar", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("baz", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 }
 
-void ListTest::getNthElement()
+void ListTest::stringGetNthElement()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     CPPUNIT_ASSERT_EQUAL(l->n->n->n, listGet(l, 2));
 }
 
-void ListTest::length()
+void ListTest::stringLength()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     CPPUNIT_ASSERT_EQUAL(4, listLength(l));
 }
 
-void ListTest::pop()
+void ListTest::stringPop()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     listPopBack(l);
     CPPUNIT_ASSERT(l->n->n->n->n == NULL);
-    CPPUNIT_ASSERT(!strcmp("baz", l->n->n->n->v));
+    CPPUNIT_ASSERT(!strcmp("baz", (char*) l->n->n->n->v));
     listPopFront(l);
-    CPPUNIT_ASSERT(!strcmp("bar", l->n->v));
+    CPPUNIT_ASSERT(!strcmp("bar", (char*) l->n->v));
     CPPUNIT_ASSERT(l->n->n->n == NULL);
-    CPPUNIT_ASSERT(!strcmp("baz", l->n->n->v));
+    CPPUNIT_ASSERT(!strcmp("baz", (char*) l->n->n->v));
     listPopBack(l);
     CPPUNIT_ASSERT(l->n->n == NULL);
-    CPPUNIT_ASSERT(!strcmp("bar", l->n->v));
+    CPPUNIT_ASSERT(!strcmp("bar", (char*) l->n->v));
     listPopBack(l);
     CPPUNIT_ASSERT(listIsEmpty(l));
     List c = listCopy(l);
@@ -252,117 +286,160 @@ void ListTest::pop()
     listFree(c);
 }
 
-void ListTest::freeEmpty()
+void ListTest::stringFreeEmpty()
 {
     listFree(l);
+    l = NULL;
 }
 
-void ListTest::empty()
+void ListTest::stringEmpty()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     listEmpty(l);
     CPPUNIT_ASSERT(l != NULL);
     CPPUNIT_ASSERT(l->n == NULL);
 }
 
-void ListTest::copy()
+void ListTest::stringCopy()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     List c = listCopy(l);
     CPPUNIT_ASSERT(l != NULL);
     CPPUNIT_ASSERT(c != NULL);
     listFree(l);
+    l = NULL;
     CPPUNIT_ASSERT(l == NULL);
     CPPUNIT_ASSERT(c != NULL);
 
     List p = listBegin(c);
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("bar", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("bar", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("baz", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
     listFree(c);
 }
 
+void divide2(void* a, void* b)
+{
+    *(int*) a = *(int*) a / (long) b ;
+}
+void ListTest::foreach()
+{
+    int a = 8;
+    int b = 18;
+    int c = 106;
+    int d = 200;
+
+    listPushBack(l, (void*) &a);
+    listPushBack(l, (void*) &b);
+    listPushBack(l, (void*) &c);
+    listPushBack(l, (void*) &d);
+
+    listForeach(l, divide2, (void*) 2);
+
+    List p = listBegin(l);
+    CPPUNIT_ASSERT_EQUAL(4, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT_EQUAL(9, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT_EQUAL(53, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT_EQUAL(100, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT(p == NULL);
+
+}
+
+#ifdef _REGEX_H
+int regexMatch(const void* a, const void* re)
+{
+    return regexec((regex_t*) re, (char*) a, 0, NULL, 0);
+}
 void ListTest::regex()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     regex_t regex;
     CPPUNIT_ASSERT(!regcomp(&regex, "^ba.$", 0));
-    List match = listGetRegex(l, &regex);
+    List match = listGetVal(l, (void*) &regex, regexMatch);
     if (match != NULL)
         listRemove(l, match);
 
 
     List p = listBegin(l);
 
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("baz", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 
-    listRemove(l, listGetRegex(l, &regex));
+    listRemove(l, listGetVal(l, (void*) &regex, regexMatch));
 
     p = listBegin(l);
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 }
 
 void ListTest::regexDelete()
 {
-    listPushBack(l, "foo");
-    listPushBack(l, "bar");
-    listPushBack(l, "baz");
-    listPushBack(l, "qux");
+    listPushBack(l, (void*) "foo");
+    listPushBack(l, (void*) "bar");
+    listPushBack(l, (void*) "baz");
+    listPushBack(l, (void*) "qux");
 
     regex_t regex;
+    List match;
     CPPUNIT_ASSERT(!regcomp(&regex, "^ba.$", 0));
-    listRemoveRegexAll(l, &regex);
+    while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
+        listRemove(l, match);
 
 
     List p = listBegin(l);
 
-    CPPUNIT_ASSERT(!strcmp("foo", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
     NEXT(p);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 
 
     CPPUNIT_ASSERT(!regcomp(&regex, "^f.*$", 0));
-    listRemoveRegexAll(l, &regex);
+    while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
+        listRemove(l, match);
 
     p = listRbegin(l);
-    CPPUNIT_ASSERT(!strcmp("qux", listVal(p)));
+    CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     PREV(p);
     CPPUNIT_ASSERT(p == NULL);
 
 
     CPPUNIT_ASSERT(!regcomp(&regex, "x", 0));
-    listRemoveRegexAll(l, &regex);
+    while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
+        listRemove(l, match);
 
     p = listRbegin(l);
     CPPUNIT_ASSERT(p == NULL);
 }
+#endif
