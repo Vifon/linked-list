@@ -24,32 +24,32 @@ int main(int argc, char *argv[])
     p = listBegin(l);
     while (p != NULL)
     {
-        printf("%s\n", listVal(p));
+        printf("%s\n", &listVal(p, char));
         NEXT(p);
     }
     puts("---");
     p = listRbegin(l);
     while (p != NULL)
     {
-        printf("%s\n", listVal(p));
+        printf("%s\n", &listVal(p, char));
         PREV(p);
     }
 
     puts("+++");
-    listRemoveValCustom(l, str, strcmp);
+    listRemoveVal(l, str, strcmp);
     free(str);
 
     p = listBegin(l);
     while (p != NULL)
     {
-        printf("%s\n", listVal(p));
+        printf("%s\n", &listVal(p, char));
         NEXT(p);
     }
     puts("---");
     p = listRbegin(l);
     while (p != NULL)
     {
-        printf("%s\n", listVal(p));
+        printf("%s\n", &listVal(p, char));
         PREV(p);
     }
 
