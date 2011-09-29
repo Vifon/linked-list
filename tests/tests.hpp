@@ -4,7 +4,7 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-// #include <regex.h>
+#include <regex.h>
 #include "../src/list.h"
 
 class ListTest : public CPPUNIT_NS::TestFixture

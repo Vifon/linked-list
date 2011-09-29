@@ -400,6 +400,7 @@ void ListTest::regex()
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
+    regfree(&regex);
 }
 
 void ListTest::regexDelete()
@@ -424,6 +425,7 @@ void ListTest::regexDelete()
     NEXT(p);
     CPPUNIT_ASSERT(p == NULL);
 
+    regfree(&regex);
 
     CPPUNIT_ASSERT(!regcomp(&regex, "^f.*$", 0));
     while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
@@ -434,6 +436,7 @@ void ListTest::regexDelete()
     PREV(p);
     CPPUNIT_ASSERT(p == NULL);
 
+    regfree(&regex);
 
     CPPUNIT_ASSERT(!regcomp(&regex, "x", 0));
     while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
@@ -441,5 +444,6 @@ void ListTest::regexDelete()
 
     p = listRbegin(l);
     CPPUNIT_ASSERT(p == NULL);
+    regfree(&regex);
 }
 #endif
