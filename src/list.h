@@ -42,6 +42,8 @@ int  listPopBack   (List root);
 int  listPopFront  (List root);
 List listCopy      (List source);
 void listForeach   (List root, void (*fun)(void*, void*), void* arg);
+int  listSwap      (List root, List place);
+void listSort      (List root, int (*cmp)(const void*, const void*));
 
 
  #ifdef __cplusplus

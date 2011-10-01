@@ -363,6 +363,119 @@ void ListTest::foreach()
 
 }
 
+void ListTest::swap()
+{
+    int a = 8;
+    int b = 18;
+    int c = 106;
+    int d = 200;
+
+    listPushBack(l, (void*) &a);
+    listPushBack(l, (void*) &b);
+    listPushBack(l, (void*) &c);
+    listPushBack(l, (void*) &d);
+
+    List cp = listCopy(l);
+    List ptr = listBegin(l);
+    NEXT(ptr);
+    listSwap(l, ptr);
+    ptr = listBegin(l);
+    NEXT(ptr);
+    CPPUNIT_ASSERT_EQUAL(cp->n->v          , ptr->p->v);
+    CPPUNIT_ASSERT_EQUAL(cp->n->n->n->v    , ptr->v);
+    CPPUNIT_ASSERT_EQUAL(cp->n->n->v       , ptr->n->n->p->v);
+    CPPUNIT_ASSERT_EQUAL(ptr->v            , ptr->n->p->v);
+    listFree(cp);
+}
+
+void ListTest::swapLast()
+{
+    int a = 8;
+    int b = 18;
+    int c = 106;
+    int d = 200;
+
+    listPushBack(l, (void*) &a);
+    listPushBack(l, (void*) &b);
+    listPushBack(l, (void*) &c);
+    listPushBack(l, (void*) &d);
+
+    List cp = listCopy(l);
+    List ptr = listRbegin(l);
+    listSwap(l, ptr);
+    ptr = listBegin(l);
+    NEXT(ptr); NEXT(ptr);
+    CPPUNIT_ASSERT_EQUAL(cp->n->n->n->v    , ptr->v);
+    CPPUNIT_ASSERT_EQUAL(cp->n->n->n->n->v , ptr->n->v);
+    CPPUNIT_ASSERT(ptr->n->n == NULL);
+    listFree(cp);
+}
+
+void ListTest::swapFirst()
+{
+    int a = 8;
+    int b = 18;
+    int c = 106;
+    int d = 200;
+
+    listPushBack(l, (void*) &a);
+    listPushBack(l, (void*) &b);
+    listPushBack(l, (void*) &c);
+    listPushBack(l, (void*) &d);
+
+    List cp = listCopy(l);
+    List ptr = listBegin(l);
+    listSwap(l, ptr);
+    ptr = listBegin(l);
+    CPPUNIT_ASSERT_EQUAL(cp->n->v       , ptr->n->v);
+    CPPUNIT_ASSERT_EQUAL(cp->n->n->v    , ptr->v);
+    CPPUNIT_ASSERT_EQUAL(cp->n->n->n->v , ptr->n->n->v);
+    CPPUNIT_ASSERT(ptr->p == NULL);
+    listFree(cp);
+}
+
+void ListTest::swapFail()
+{
+    int a = 8;
+
+    listPushBack(l, (void*) &a);
+
+    List cp = listCopy(l);
+    List ptr = listBegin(l);
+    CPPUNIT_ASSERT(!listSwap(l, ptr));
+    ptr = listBegin(l);
+    CPPUNIT_ASSERT_EQUAL(cp->n->v, ptr->v);
+    CPPUNIT_ASSERT(ptr->p == NULL);
+    CPPUNIT_ASSERT(ptr->n == NULL);
+    listFree(cp);
+}
+
+void ListTest::sort()
+{
+    int a = 80;
+    int b = 18;
+    int c = 306;
+    int d = 20;
+
+    listPushBack(l, (void*) &a);
+    listPushBack(l, (void*) &b);
+    listPushBack(l, (void*) &c);
+    listPushBack(l, (void*) &d);
+
+    listSort(l, cmp);
+
+    List p = listBegin(l);
+    CPPUNIT_ASSERT_EQUAL(18, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT_EQUAL(20, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT_EQUAL(80, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT_EQUAL(306, listVal(p, int));
+    NEXT(p);
+    CPPUNIT_ASSERT(p == NULL);
+}
+
 #ifdef _REGEX_H
 int regexMatch(const void* a, const void* re)
 {

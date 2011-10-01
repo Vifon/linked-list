@@ -4,7 +4,7 @@
 
 List listInit()
 {
-    List root   = newListNode();
+    List root = newListNode();
 
     root->isRoot = 1;
     root->n      = NULL;
@@ -79,7 +79,7 @@ List listGet(List root, int n)
 /* compare should return -1 on lesser, 0 on equal and 1 on greater */
 List listGetVal(List root, void* val, int (*compare)(const void*, const void*))
 {
-    List element = listBegin(root);
+    List element                                                              = listBegin(root);
     for (; element != NULL && element->v != NULL && compare(element->v, val) != 0; NEXT(element));
     return element;
 }
@@ -87,7 +87,7 @@ List listGetVal(List root, void* val, int (*compare)(const void*, const void*))
 void listRemove(List root, List element)
 {
     if (root->n == element)
-        root->n = element->n;
+        root->n       = element->n;
     if (element->p != NULL)
         element->p->n = element->n;
     if (element->n != NULL)
@@ -178,5 +178,51 @@ void listForeach(List root, void (*fun)(void*, void*), void* arg)
     {
         fun(root->v, arg);
         NEXT(root);
+    }
+}
+
+int listSwap(List root, List place)
+{
+    List next;
+    if (place->isRoot || place->n == NULL)
+        return 0;
+    if (root->n == place)
+        root->n = place->n;
+    next = place->n->n;
+
+    place->n->p        = place->p;
+    if (place->n->n != NULL)
+        place->n->n->p = place;
+    place->n->n        = place;
+    if (place->p != NULL)
+        place->p->n    = place->n;
+    place->p           = place->n;
+    place->n           = next;
+    return 1;
+}
+
+void listSort(List root, int (*cmp)(const void*, const void*))
+{
+    int  sorted = 0;
+    List p      = root->n;
+    int  i      = 0;
+    int  length = listLength(root);
+    while(!sorted && i < length)
+    {
+        int j = 0;
+        p = root->n;
+        while (j < length-i && p->n != NULL)
+        {
+            ++j;
+            sorted = 1;
+            if (cmp(p->v, p->n->v) > 0)
+            {
+                listSwap(root, p);
+                sorted = 0;
+            }
+            else
+                NEXT(p);
+        }
+        ++i;
     }
 }

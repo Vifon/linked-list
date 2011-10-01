@@ -26,6 +26,11 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(stringEmpty);
     CPPUNIT_TEST(stringCopy);
     CPPUNIT_TEST(foreach);
+    CPPUNIT_TEST(swap);
+    CPPUNIT_TEST(swapLast);
+    CPPUNIT_TEST(swapFirst);
+    CPPUNIT_TEST(swapFail);
+    CPPUNIT_TEST(sort);
 #ifdef _REGEX_H
     CPPUNIT_TEST(regex);
     CPPUNIT_TEST(regexDelete);
@@ -52,6 +57,11 @@ class ListTest : public CPPUNIT_NS::TestFixture
     void stringEmpty();
     void stringCopy();
     void foreach();
+    void swap();
+    void swapLast();
+    void swapFirst();
+    void swapFail();
+    void sort();
 #ifdef _REGEX_H
     void regex();
     void regexDelete();
