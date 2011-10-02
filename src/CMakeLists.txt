@@ -1,6 +1,6 @@
 set(list_SOURCES
   list.c
-  main.c
+  tests.c
   )
 set(list_HEADERS
   list.h
