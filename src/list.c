@@ -183,21 +183,14 @@ void listForeach(List root, void (*fun)(void*, void*), void* arg)
 
 int listSwap(List root, List place)
 {
-    List next;
+    void* p;
     if (place->isRoot || place->n == NULL)
         return 0;
-    if (root->n == place)
-        root->n = place->n;
-    next = place->n->n;
 
-    place->n->p        = place->p;
-    if (place->n->n != NULL)
-        place->n->n->p = place;
-    place->n->n        = place;
-    if (place->p != NULL)
-        place->p->n    = place->n;
-    place->p           = place->n;
-    place->n           = next;
+    p = place->v;
+    place->v = place->n->v;
+    place->n->v = p;
+
     return 1;
 }
 
