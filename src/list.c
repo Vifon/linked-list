@@ -15,7 +15,7 @@ List listInit()
 List listRbegin(List root)
 {
     NEXT(root);
-    while (root != NULL && root->n != NULL)
+    while (root && root->n)
         NEXT(root);
     return root;
 }
@@ -43,7 +43,7 @@ void listPushFront(List root, void* val)
 void listPushSort(List root, void* val, int (*compare)(const void*, const void*))
 {
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
-    while (root->n != NULL && compare(root->n->v, val) < 0)
+    while (root->n && compare(root->n->v, val) < 0)
         NEXT(root);
     listAddAfter(root, val);
 }
@@ -59,7 +59,7 @@ void listAddAfter(List place, void* val)
         ptr->p      = place;
     else
         ptr->p      = NULL;
-    if (place->n != NULL)
+    if (place->n)
         place->n->p = ptr;
     place->n        = ptr;
 }
@@ -80,7 +80,7 @@ List listGet(List root, int n)
 List listGetVal(List root, void* val, int (*compare)(const void*, const void*))
 {
     List element                                                              = listBegin(root);
-    for (; element != NULL && element->v != NULL && compare(element->v, val) != 0; NEXT(element));
+    for (; element && element->v && compare(element->v, val) != 0; NEXT(element));
     return element;
 }
 
@@ -88,9 +88,9 @@ void listRemove(List root, List element)
 {
     if (root->n == element)
         root->n       = element->n;
-    if (element->p != NULL)
+    if (element->p)
         element->p->n = element->n;
-    if (element->n != NULL)
+    if (element->n)
         element->n->p = element->p;
     free(element);
 }
@@ -118,7 +118,7 @@ int listLength(List root)
 {
     int i = 0;
     NEXT(root);
-    while (root != NULL)
+    while (root)
     {
         NEXT(root);
         ++i;
@@ -140,7 +140,7 @@ void listEmpty(List root)
 int listPopBack(List root)
 {
     List last = listRbegin(root);
-    if (last != NULL)
+    if (last)
     {
         listRemove(root, last);
         return 1;
@@ -152,7 +152,7 @@ int listPopBack(List root)
 int listPopFront(List root)
 {
     List last = listBegin(root);
-    if (last != NULL)
+    if (last)
     {
         listRemove(root, last);
         return 1;
@@ -174,7 +174,7 @@ List listCopy(List source)
 void listForeach(List root, void (*fun)(void*, void*), void* arg)
 {
     root = listBegin(root);
-    while (root != NULL)
+    while (root)
     {
         fun(root->v, arg);
         NEXT(root);
@@ -204,7 +204,7 @@ void listSort(List root, int (*cmp)(const void*, const void*))
     {
         int j = 0;
         p = root->n;
-        while (j < length-i && p->n != NULL)
+        while (j < length-i && p->n)
         {
             ++j;
             sorted = 1;
