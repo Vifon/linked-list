@@ -79,7 +79,7 @@ List listGet(List root, int n)
 /* compare should return -1 on lesser, 0 on equal and 1 on greater */
 List listGetVal(List root, void* val, int (*compare)(const void*, const void*))
 {
-    List element                                                              = listBegin(root);
+    List element = listBegin(root);
     for (; element && element->v && compare(element->v, val) != 0; NEXT(element));
     return element;
 }
