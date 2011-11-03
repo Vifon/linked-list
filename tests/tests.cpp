@@ -1,7 +1,9 @@
 // File: tests.cpp
 #include "tests.hpp"
 #include <list>
-#include <string.h>
+#include <cstring>
+#include <ctime>
+#include <cstdlib>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ListTest);
 
@@ -458,28 +460,32 @@ void ListTest::swapFail()
 
 void ListTest::sort()
 {
-    int a = 80;
-    int b = 18;
-    int c = 306;
-    int d = 20;
+    std::list<int> sl;
+    int r;
+    srand(time(NULL));
 
-    listPushBack(l, (void*) &a);
-    listPushBack(l, (void*) &b);
-    listPushBack(l, (void*) &c);
-    listPushBack(l, (void*) &d);
-
+    for (int i = 0; i < 1024; ++i)
+    {
+        r = rand();
+        sl.push_back(r);
+        listPushBack(l, (void*) new int(r));
+    }
+    sl.sort();
     listSort(l, cmp);
 
-    List p = listBegin(l);
-    CPPUNIT_ASSERT_EQUAL(18, listVal(p, int));
-    NEXT(p);
-    CPPUNIT_ASSERT_EQUAL(20, listVal(p, int));
-    NEXT(p);
-    CPPUNIT_ASSERT_EQUAL(80, listVal(p, int));
-    NEXT(p);
-    CPPUNIT_ASSERT_EQUAL(306, listVal(p, int));
-    NEXT(p);
-    CPPUNIT_ASSERT(p == NULL);
+    std::list<int>::iterator it1;
+    List it2;
+
+    for (it1 = sl.begin(), it2 = listBegin(l);
+         it1 != sl.end() && it2 != NULL;
+         ++it1, NEXT(it2))
+    {
+        CPPUNIT_ASSERT_EQUAL(*it1, *(int*) it2->v);
+    }
+    CPPUNIT_ASSERT(it1 == sl.end());
+    CPPUNIT_ASSERT(it2 == NULL);
+
+    listForeach(l, freeint, NULL);
 }
 
 #ifdef _REGEX_H
