@@ -110,6 +110,12 @@ void ListTest::intPushSort()
     listPushSort(l, (void*) new int(8), cmp);
     sl.push_back(1);
     listPushSort(l, (void*) new int(1), cmp);
+    sl.push_back(17);
+    listPushSort(l, (void*) new int(17), cmp);
+    sl.push_back(102);
+    listPushSort(l, (void*) new int(102), cmp);
+    sl.push_back(38);
+    listPushSort(l, (void*) new int(38), cmp);
 
     sl.sort();
 

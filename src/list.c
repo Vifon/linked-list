@@ -200,21 +200,35 @@ void listSort(List root, int (*cmp)(const void*, const void*))
     List p      = root->n;
     int  i      = 0;
     int  length = listLength(root);
-    while(!sorted && i < length)
+    while (!sorted)
     {
-        int j = 0;
-        p = root->n;
-        while (j < length-i && p->n)
+        int j = i;
+        sorted = 1;
+        while (j < length-i-1)
         {
             ++j;
-            sorted = 1;
             if (cmp(p->v, p->n->v) > 0)
             {
                 listSwap(root, p);
                 sorted = 0;
             }
-            else
-                NEXT(p);
+            NEXT(p);
+        }
+        if (!sorted)
+        {
+            PREV(p);
+            sorted = 1;
+            while (j > i+1)
+            {
+                --j;
+                if (cmp(p->v, p->p->v) < 0)
+                {
+                    listSwap(root, p->p);
+                    sorted = 0;
+                }
+                PREV(p);
+            }
+            NEXT(p);
         }
         ++i;
     }
