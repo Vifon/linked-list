@@ -183,24 +183,13 @@ void listForeach(List root, void (*fun)(void*, void*), void* arg)
 
 int listSwap(List root, List place)
 {
+    void* p;
     if (place->isRoot || place->n == NULL)
         return 0;
 
-#if defined __i386__
-    __asm__("xchg %%eax, %%ebx"
-            : "=a"(place->v), "=b"(place->n->v)
-            :  "a"(place->v),  "b"(place->n->v));
-#elif defined __x86_64__
-    __asm__("xchg %%rax, %%rbx"
-            : "=a"(place->v), "=b"(place->n->v)
-            :  "a"(place->v),  "b"(place->n->v));
-#else
-    {
-        void* p = place->v;
-        place->v = place->n->v;
-        place->n->v = p;
-    }
-#endif
+    p = place->v;
+    place->v = place->n->v;
+    place->n->v = p;
 
     return 1;
 }
