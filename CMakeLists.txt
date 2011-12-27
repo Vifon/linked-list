@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(list)
-add_definitions(-pedantic -Wall -ansi -Wno-write-strings -Wno-deprecated-writable-strings)
+add_definitions(-pedantic -Wall -ansi)
 set(CMAKE_C_FLAGS_DEBUG   "-g -O0")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_C_FLAGS   "-O2")

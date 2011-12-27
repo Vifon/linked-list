@@ -8,5 +8,6 @@ set(unittests_HEADERS
   tests.hpp
   )
 
+add_definitions(-Wno-write-strings)
 add_executable(unittests ${unittests_SOURCES})
 target_link_libraries(unittests cppunit list)
