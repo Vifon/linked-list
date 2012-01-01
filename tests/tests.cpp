@@ -232,7 +232,7 @@ void ListTest::stringRemoveByNonExistentValue()
     listPushBack(l, (void*) "baz");
     listPushBack(l, (void*) "qux");
 
-    CPPUNIT_ASSERT(listRemoveVal(l, (void*) "cycki", mystrcmp1) == false);
+    CPPUNIT_ASSERT(listRemoveVal(l, (void*) "I don't exist", mystrcmp1) == false);
 
     List p = listBegin(l);
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
