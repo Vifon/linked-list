@@ -40,7 +40,7 @@ typedef struct list
 #define listRef(A, T) ((T*) (A)->v)
 #define newListNode() ((List) malloc(sizeof(struct list)))
 
-List listRbegin    (List root);
+List listRBegin    (List root);
 List listInit      ();
 void listPushBack  (List root,  void* val);
 void listPushFront (List root,  void* val);

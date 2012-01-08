@@ -409,7 +409,7 @@ void ListTest::swapLast()
     listPushBack(l, (void*) &d);
 
     List cp = listCopy(l);
-    List ptr = listRbegin(l);
+    List ptr = listRBegin(l);
     listSwap(l, ptr);
     ptr = listBegin(l);
     NEXT(ptr); NEXT(ptr);
@@ -556,7 +556,7 @@ void ListTest::regexDelete()
     while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
         listRemove(l, match);
 
-    p = listRbegin(l);
+    p = listRBegin(l);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
     PREV(p);
     CPPUNIT_ASSERT(p == NULL);
@@ -567,7 +567,7 @@ void ListTest::regexDelete()
     while((match = listGetVal(l, (void*) &regex, regexMatch)) != NULL)
         listRemove(l, match);
 
-    p = listRbegin(l);
+    p = listRBegin(l);
     CPPUNIT_ASSERT(p == NULL);
     regfree(&regex);
 }

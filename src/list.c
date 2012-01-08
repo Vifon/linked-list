@@ -29,7 +29,7 @@ List listInit()
     return root;
 }
 
-List listRbegin(List root)
+List listRBegin(List root)
 {
     NEXT(root);
     while (root && root->n)
@@ -48,7 +48,7 @@ void listFree(List root)
 void listPushBack(List root, void* val)
 {
     if (!listIsEmpty(root))
-        root = listRbegin(root);
+        root = listRBegin(root);
     listAddAfter(root, val);
 }
 
@@ -156,7 +156,7 @@ void listEmpty(List root)
 
 int listPopBack(List root)
 {
-    List last = listRbegin(root);
+    List last = listRBegin(root);
     if (last)
     {
         listRemove(root, last);
