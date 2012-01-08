@@ -37,6 +37,7 @@ typedef struct list
 #define PREV(A)       (A = A->p)
 #define listBegin(A)  A->n
 #define listVal(A, T) (*(T*) (A)->v)
+#define listRef(A, T) ((T*) (A)->v)
 #define newListNode() ((List) malloc(sizeof(struct list)))
 
 List listRbegin    (List root);
