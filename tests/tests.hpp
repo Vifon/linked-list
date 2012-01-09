@@ -22,6 +22,7 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(stringRemoveByNonExistentValue);
     CPPUNIT_TEST(stringLength);
     CPPUNIT_TEST(stringPop);
+    CPPUNIT_TEST(pop);
     CPPUNIT_TEST(stringFreeEmpty);
     CPPUNIT_TEST(stringEmpty);
     CPPUNIT_TEST(stringCopy);
@@ -53,6 +54,7 @@ class ListTest : public CPPUNIT_NS::TestFixture
     void stringGetNthElement();
     void stringLength();
     void stringPop();
+    void pop();
     void stringFreeEmpty();
     void stringEmpty();
     void stringCopy();

@@ -154,28 +154,30 @@ void listEmpty(List root)
     root->n = NULL;
 }
 
-int listPopBack(List root)
+void* listPopBack(List root)
 {
     List last = listRBegin(root);
     if (last)
     {
+        void* tmp = last->v;
         listRemove(root, last);
-        return 1;
+        return tmp;
     }
     else
-        return 0;
+        return NULL;
 }
 
-int listPopFront(List root)
+void* listPopFront(List root)
 {
     List last = listBegin(root);
     if (last)
     {
+        void* tmp = last->v;
         listRemove(root, last);
-        return 1;
+        return tmp;
     }
     else
-        return 0;
+        return NULL;
 }
 
 List listCopy(List source)

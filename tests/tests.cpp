@@ -294,6 +294,34 @@ void ListTest::stringPop()
     listFree(c);
 }
 
+void ListTest::pop()
+{
+    listPushBack(l, (void*) new int(3));
+    listPushBack(l, (void*) new int(7));
+    listPushBack(l, (void*) new int(2));
+    listPushBack(l, (void*) new int(12));
+
+    delete (int*) listPopBack(l);
+    CPPUNIT_ASSERT(l->n->n->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(2, *(int*) l->n->n->n->v);
+    delete (int*) listPopFront(l);
+    CPPUNIT_ASSERT_EQUAL(7, *(int*) l->n->v);
+    CPPUNIT_ASSERT(l->n->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(2, *(int*) l->n->n->v);
+    delete (int*) listPopBack(l);
+    CPPUNIT_ASSERT(l->n->n == NULL);
+    CPPUNIT_ASSERT_EQUAL(7, *(int*) l->n->v);
+    delete (int*) listPopBack(l);
+    CPPUNIT_ASSERT(listIsEmpty(l));
+    List c = listCopy(l);
+
+    CPPUNIT_ASSERT(!listPopFront(l));
+    CPPUNIT_ASSERT(!listPopBack(c));
+    CPPUNIT_ASSERT(listIsEmpty(l));
+    CPPUNIT_ASSERT(listIsEmpty(c));
+    listFree(c);
+}
+
 void ListTest::stringFreeEmpty()
 {
     listFree(l);
