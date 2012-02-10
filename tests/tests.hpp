@@ -15,6 +15,7 @@ class ListTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(stringPushBack);
     CPPUNIT_TEST(stringPushFront);
     CPPUNIT_TEST(intPushSort);
+    CPPUNIT_TEST(newRBegin);
     CPPUNIT_TEST(stringPushSort);
     CPPUNIT_TEST(stringGetNthElement);
     CPPUNIT_TEST(stringRemoveByNumber);
@@ -47,6 +48,7 @@ class ListTest : public CPPUNIT_NS::TestFixture
     void stringPushBack();
     void stringPushFront();
     void intPushSort();
+    void newRBegin();
     void stringPushSort();
     void stringRemoveByNumber();
     void stringRemoveByValue();

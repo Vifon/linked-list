@@ -28,7 +28,7 @@
 typedef struct list
 {
     void*        v;
-    int          isRoot;        /* true only in the first one */
+    char         isRoot;        /* true only in the first one */
     struct list* n;
     struct list* p;
 } *List;
@@ -36,16 +36,16 @@ typedef struct list
 #define NEXT(A)       (A = A->n)
 #define PREV(A)       (A = A->p)
 #define listBegin(A)  A->n
+#define listRBegin(A) A->p
 #define listVal(A, T) (*(T*) (A)->v)
 #define listRef(A, T) ((T*) (A)->v)
 #define newListNode() ((List) malloc(sizeof(struct list)))
 
-List  listRBegin    (List root);
 List  listInit      ();
 void  listPushBack  (List root,  void* val);
 void  listPushFront (List root,  void* val);
 void  listPushSort  (List root,  void* val, int (*compare)(const void*, const void*));
-void  listAddAfter  (List place, void* val);
+List  listAddAfter  (List root,  List place, void* val);
 void  listFree      (List root);
 List  listGet       (List root,  int n);
 List  listGetVal    (List root,  void* val, int (*compare)(const void*, const void*));

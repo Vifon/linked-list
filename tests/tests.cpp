@@ -94,7 +94,7 @@ int cmp(const void* a, const void* b)
 {
     if      (*(int*) a < *(int*) b) return -1;
     else if (*(int*) a > *(int*) b) return 1;
-    else            return 0;
+    else                            return 0;
 }
 void freeint(void* a, void*)
 {
@@ -132,6 +132,25 @@ void ListTest::intPushSort()
     }
     CPPUNIT_ASSERT(it1 == sl.end());
     CPPUNIT_ASSERT(it2 == NULL);
+
+    listForeach(l, freeint, NULL);
+}
+
+void ListTest::newRBegin()
+{
+    CPPUNIT_ASSERT(!l->n);
+    CPPUNIT_ASSERT(!l->p);
+
+    listPushBack(l, (void*) new int(5));
+    CPPUNIT_ASSERT(l->n == l->p);
+    listPushBack(l, (void*) new int(33));
+    CPPUNIT_ASSERT(l->n->n == l->p);
+    listPushFront(l, (void*) new int(8));
+    CPPUNIT_ASSERT(l->n->n->n == l->p);
+    listPushSort(l, (void*) new int(1), cmp);
+    CPPUNIT_ASSERT(l->n->n->n->n == l->p);
+    listPushSort(l, (void*) new int(34), cmp);
+    CPPUNIT_ASSERT(l->n->n->n->n->n == l->p);
 
     listForeach(l, freeint, NULL);
 }

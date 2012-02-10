@@ -29,14 +29,6 @@ List listInit()
     return root;
 }
 
-List listRBegin(List root)
-{
-    NEXT(root);
-    while (root && root->n)
-        NEXT(root);
-    return root;
-}
-
 void listFree(List root)
 {
     if (root == NULL)
@@ -47,25 +39,26 @@ void listFree(List root)
 
 void listPushBack(List root, void* val)
 {
-    if (!listIsEmpty(root))
-        root = listRBegin(root);
-    listAddAfter(root, val);
+    listAddAfter(root,
+                 listIsEmpty(root) ? root : listRBegin(root),
+                 val);
 }
 
 void listPushFront(List root, void* val)
 {
-    listAddAfter(root, val);
+    listAddAfter(root, root, val);
 }
 
 void listPushSort(List root, void* val, int (*compare)(const void*, const void*))
 {
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
-    while (root->n && compare(root->n->v, val) < 0)
-        NEXT(root);
-    listAddAfter(root, val);
+    List iterator = root;
+    while (iterator->n && compare(iterator->n->v, val) < 0)
+        NEXT(iterator);
+    listAddAfter(root, iterator, val);
 }
 
-void listAddAfter(List place, void* val)
+List listAddAfter(List root, List place, void* val)
 {
     List ptr;
     ptr             = newListNode();
@@ -79,6 +72,11 @@ void listAddAfter(List place, void* val)
     if (place->n)
         place->n->p = ptr;
     place->n        = ptr;
+
+    if (ptr->n == NULL)
+        root->p = ptr;
+
+    return ptr;
 }
 
 List listGet(List root, int n)
@@ -109,6 +107,8 @@ void listRemove(List root, List element)
         element->p->n = element->n;
     if (element->n)
         element->n->p = element->p;
+    else
+        root->p = element->p;
     free(element);
 }
 
@@ -205,6 +205,8 @@ int listSwap(List root, List place)
     void* p;
     if (place->isRoot || place->n == NULL)
         return 0;
+    else if (place->n == root->p)
+        root->p = place;
 
     p = place->v;
     place->v = place->n->v;
