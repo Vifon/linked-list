@@ -31,10 +31,12 @@ void ListTest::movement()
     listPushBack(l, (void*) "qux");
 
     List a = listBegin(l);
-    NEXT(a); NEXT(a); NEXT(a);
+    a = listNext(a);
+    a = listNext(a);
+    a = listNext(a);
     CPPUNIT_ASSERT_EQUAL(l->n->n->n->n, a);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(a, char)));
-    PREV(a);
+    a = listPrev(a);
     CPPUNIT_ASSERT_EQUAL(l->n->n->n, a);
 }
 
@@ -56,7 +58,7 @@ void ListTest::stringPushBack()
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
-         ++it1, NEXT(it2))
+         ++it1, it2 = listNext(it2))
     {
         CPPUNIT_ASSERT_EQUAL(*it1, &listVal(it2, char));
     }
@@ -82,7 +84,7 @@ void ListTest::stringPushFront()
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
-         ++it1, NEXT(it2))
+         ++it1, it2 = listNext(it2))
     {
         CPPUNIT_ASSERT_EQUAL(*it1, &listVal(it2, char));
     }
@@ -126,7 +128,7 @@ void ListTest::intPushSort()
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
-         ++it1, NEXT(it2))
+         ++it1, it2 = listNext(it2))
     {
         CPPUNIT_ASSERT(*it1 == listVal(it2, int));
     }
@@ -188,7 +190,7 @@ void ListTest::stringPushSort()
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
-         ++it1, NEXT(it2))
+         ++it1, it2 = listNext(it2))
     {
         CPPUNIT_ASSERT(!strcmp(*it1, &listVal(it2, char)));
     }
@@ -207,11 +209,11 @@ void ListTest::stringRemoveByNumber()
 
     List p = listBegin(l);
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("bar", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
 
     CPPUNIT_ASSERT(listRemoveN(l, 0));
@@ -231,11 +233,11 @@ void ListTest::stringRemoveByValue()
 
     List p = listBegin(l);
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
 
     CPPUNIT_ASSERT(listRemoveVal(l, (void*) "foo", mystrcmp1));
@@ -255,13 +257,13 @@ void ListTest::stringRemoveByNonExistentValue()
 
     List p = listBegin(l);
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("bar", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
 }
 
@@ -376,13 +378,13 @@ void ListTest::stringCopy()
 
     List p = listBegin(c);
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("bar", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
     listFree(c);
 }
@@ -407,13 +409,13 @@ void ListTest::foreach()
 
     List p = listBegin(l);
     CPPUNIT_ASSERT_EQUAL(4, listVal(p, int));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT_EQUAL(9, listVal(p, int));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT_EQUAL(53, listVal(p, int));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT_EQUAL(100, listVal(p, int));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
 
 }
@@ -432,10 +434,10 @@ void ListTest::swap()
 
     List cp = listCopy(l);
     List ptr = listBegin(l);
-    NEXT(ptr);
+    ptr = listNext(ptr);
     listSwap(l, ptr);
     ptr = listBegin(l);
-    NEXT(ptr);
+    ptr = listNext(ptr);
     CPPUNIT_ASSERT_EQUAL(cp->n->v          , ptr->p->v);
     CPPUNIT_ASSERT_EQUAL(cp->n->n->n->v    , ptr->v);
     CPPUNIT_ASSERT_EQUAL(cp->n->n->v       , ptr->n->n->p->v);
@@ -459,7 +461,8 @@ void ListTest::swapLast()
     List ptr = listRBegin(l);
     listSwap(l, ptr);
     ptr = listBegin(l);
-    NEXT(ptr); NEXT(ptr);
+    ptr = listNext(ptr);
+    ptr = listNext(ptr);
     CPPUNIT_ASSERT_EQUAL(cp->n->n->n->v    , ptr->v);
     CPPUNIT_ASSERT_EQUAL(cp->n->n->n->n->v , ptr->n->v);
     CPPUNIT_ASSERT(ptr->n->n == NULL);
@@ -525,7 +528,7 @@ void ListTest::sort()
 
     for (it1 = sl.begin(), it2 = listBegin(l);
          it1 != sl.end() && it2 != NULL;
-         ++it1, NEXT(it2))
+         ++it1, it2 = listNext(it2))
     {
         CPPUNIT_ASSERT_EQUAL(*it1, *(int*) it2->v);
     }
@@ -557,20 +560,20 @@ void ListTest::regex()
     List p = listBegin(l);
 
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("baz", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
 
     listRemove(l, listGetVal(l, (void*) &regex, regexMatch));
 
     p = listBegin(l);
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
     regfree(&regex);
 }
@@ -592,9 +595,9 @@ void ListTest::regexDelete()
     List p = listBegin(l);
 
     CPPUNIT_ASSERT(!strcmp("foo", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    NEXT(p);
+    p = listNext(p);
     CPPUNIT_ASSERT(p == NULL);
 
     regfree(&regex);
@@ -605,7 +608,7 @@ void ListTest::regexDelete()
 
     p = listRBegin(l);
     CPPUNIT_ASSERT(!strcmp("qux", &listVal(p, char)));
-    PREV(p);
+    p = listPrev(p);
     CPPUNIT_ASSERT(p == NULL);
 
     regfree(&regex);

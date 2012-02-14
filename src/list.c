@@ -19,7 +19,7 @@
 #include "list.h"
 #include <stdlib.h>
 
-List listInit()
+List listInit(void)
 {
     List root = newListNode();
 
@@ -54,7 +54,7 @@ void listPushSort(List root, void* val, int (*compare)(const void*, const void*)
     /* compare should return -1 on lesser, 0 on equal and 1 on greater */
     List iterator = root;
     while (iterator->n && compare(iterator->n->v, val) < 0)
-        NEXT(iterator);
+        iterator = listNext(iterator);
     listAddAfter(root, iterator, val);
 }
 
@@ -84,7 +84,7 @@ List listGet(List root, int n)
     int i;
     for (i = 0; i <= n; ++i)    /* intentional apparent off-by-one! */
     {
-        NEXT(root);
+        root = listNext(root);
         if (root == NULL)
             return NULL;        /* out-of-list exception */
     }
@@ -95,7 +95,8 @@ List listGet(List root, int n)
 List listGetVal(List root, void* val, int (*compare)(const void*, const void*))
 {
     List element = listBegin(root);
-    for (; element && element->v && compare(element->v, val) != 0; NEXT(element));
+    for (; element && element->v && compare(element->v, val) != 0; element = listNext(element))
+        ;
     return element;
 }
 
@@ -134,10 +135,10 @@ int listRemoveVal(List root, void* val, int (*compare)(const void*, const void*)
 int listLength(List root)
 {
     int i = 0;
-    NEXT(root);
+    root = listNext(root);
     while (root)
     {
-        NEXT(root);
+        root = listNext(root);
         ++i;
     }
     return i;
@@ -183,7 +184,7 @@ void* listPopFront(List root)
 List listCopy(List source)
 {
     List copy = listInit();
-    while ((NEXT(source)))
+    while ((source = listNext(source)))
     {
         listPushBack(copy, source->v);
     }
@@ -196,7 +197,7 @@ void listForeach(List root, void (*fun)(void*, void*), void* arg)
     while (root)
     {
         fun(root->v, arg);
-        NEXT(root);
+        root = listNext(root);
     }
 }
 
@@ -268,9 +269,9 @@ void listSort(List root, int (*cmp)(const void*, const void*))
             /* step `insize' places along from p */
             q = p;
             psize = 0;
-            for (i = 0; i < insize && q; i++) {
-                psize++;
-                NEXT(q);
+            for (i = 0; i < insize && q; ++i) {
+                ++psize;
+                q = listNext(q);
             }
 
             /* if q hasn't fallen off end, we have two lists to merge */
@@ -282,17 +283,17 @@ void listSort(List root, int (*cmp)(const void*, const void*))
                 /* decide whether next element of merge comes from p or q */
                 if (psize == 0) {
                     /* p is empty; e must come from q. */
-                    e = q; NEXT(q); --qsize;
+                    e = q; q = listNext(q); --qsize;
                 } else if (qsize == 0 || !q) {
                     /* q is empty; e must come from p. */
-                    e = p; NEXT(p); --psize;
+                    e = p; p = listNext(p); --psize;
                 } else if (cmp(p->v,q->v) <= 0) {
                     /* First element of p is lower (or same);
                      * e must come from p. */
-                    e = p; NEXT(p); --psize;
+                    e = p; p = listNext(p); --psize;
                 } else {
                     /* First element of q is lower; e must come from q. */
-                    e = q; NEXT(q); --qsize;
+                    e = q; q = listNext(q); --qsize;
                 }
 
                 /* add the next element to the merged list */
@@ -314,7 +315,7 @@ void listSort(List root, int (*cmp)(const void*, const void*))
         if (nmerges <= 1) {  /* allow for nmerges==0, the empty list case */
             List iterator;
             root->n = list;
-            for (iterator = root->n; iterator->n != NULL; NEXT(iterator))
+            for (iterator = root->n; iterator->n != NULL; iterator = listNext(iterator))
                 ;
             root->p = iterator;
             return;

@@ -27,21 +27,21 @@
 
 typedef struct list
 {
-    void*        v;
+    void*        v;             /* data pointer */
     char         isRoot;        /* true only in the first one */
-    struct list* n;
-    struct list* p;
+    struct list* n;             /* pointer to the next element */
+    struct list* p;             /* pointer to the previous element */
 } *List;
 
-#define NEXT(A)       (A = A->n)
-#define PREV(A)       (A = A->p)
+#define listNext(A)   A->n
+#define listPrev(A)   A->p
 #define listBegin(A)  A->n
 #define listRBegin(A) A->p
 #define listVal(A, T) (*(T*) (A)->v)
-#define listRef(A, T) ((T*) (A)->v)
+#define listRef(A, T) ( (T*) (A)->v)
 #define newListNode() ((List) malloc(sizeof(struct list)))
 
-List  listInit      ();
+List  listInit      (void);
 void  listPushBack  (List root,  void* val);
 void  listPushFront (List root,  void* val);
 void  listPushSort  (List root,  void* val, int (*compare)(const void*, const void*));
