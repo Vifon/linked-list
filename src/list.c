@@ -215,42 +215,112 @@ int listSwap(List root, List place)
     return 1;
 }
 
+
+/* This is a modified version of Simon Tatham's mergesort for linked lists */
+/*
+ * This file is copyright 2001 Simon Tatham.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.  IN NO EVENT SHALL SIMON TATHAM BE LIABLE FOR
+ * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 void listSort(List root, int (*cmp)(const void*, const void*))
 {
-    int  sorted = 0;
-    List p      = root->n;
-    int  i      = 0;
-    int  length = listLength(root);
-    while (!sorted)
-    {
-        int j = i;
-        sorted = 1;
-        while (j < length-i-1)
-        {
-            ++j;
-            if (cmp(p->v, p->n->v) > 0)
-            {
-                listSwap(root, p);
-                sorted = 0;
+    List p, q, e, tail;
+    List list = listBegin(root);
+    int insize, nmerges, psize, qsize, i;
+
+    /*
+     * Silly special case: if `list' was passed in as NULL, return
+     * NULL immediately.
+     */
+    if (!list)
+        return;
+
+    insize = 1;
+
+    while (1) {
+        p = list;
+        list = NULL;
+        tail = NULL;
+
+        nmerges = 0;  /* count number of merges we do in this pass */
+
+        while (p) {
+            ++nmerges;  /* there exists a merge to be done */
+            /* step `insize' places along from p */
+            q = p;
+            psize = 0;
+            for (i = 0; i < insize && q; i++) {
+                psize++;
+                NEXT(q);
             }
-            NEXT(p);
-        }
-        if (!sorted)
-        {
-            PREV(p);
-            sorted = 1;
-            while (j > i+1)
-            {
-                --j;
-                if (cmp(p->v, p->p->v) < 0)
-                {
-                    listSwap(root, p->p);
-                    sorted = 0;
+
+            /* if q hasn't fallen off end, we have two lists to merge */
+            qsize = insize;
+
+            /* now we have two lists; merge them */
+            while (psize > 0 || (qsize > 0 && q)) {
+
+                /* decide whether next element of merge comes from p or q */
+                if (psize == 0) {
+                    /* p is empty; e must come from q. */
+                    e = q; NEXT(q); --qsize;
+                } else if (qsize == 0 || !q) {
+                    /* q is empty; e must come from p. */
+                    e = p; NEXT(p); --psize;
+                } else if (cmp(p->v,q->v) <= 0) {
+                    /* First element of p is lower (or same);
+                     * e must come from p. */
+                    e = p; NEXT(p); --psize;
+                } else {
+                    /* First element of q is lower; e must come from q. */
+                    e = q; NEXT(q); --qsize;
                 }
-                PREV(p);
+
+                /* add the next element to the merged list */
+                if (tail) {
+                    tail->n = e;
+                } else {
+                    list = e;
+                }
+                e->p = tail;
+                tail = e;
             }
-            NEXT(p);
+
+            /* now p has stepped `insize' places along, and q has too */
+            p = q;
         }
-        ++i;
+        tail->n = NULL;
+
+        /* If we have done only one merge, we're finished. */
+        if (nmerges <= 1) {  /* allow for nmerges==0, the empty list case */
+            List iterator;
+            root->n = list;
+            for (iterator = root->n; iterator->n != NULL; NEXT(iterator))
+                ;
+            root->p = iterator;
+            return;
+        }
+
+        /* Otherwise repeat, merging lists twice the size */
+        insize *= 2;
     }
 }
