@@ -1,6 +1,6 @@
 /* File: list.h */
 /*************************************************************************/
-/* Copyright (C) 2011  Wojciech Siewierski                               */
+/* Copyright (C) 2011-2012  Wojciech Siewierski                          */
 /*                                                                       */
 /* This program is free software: you can redistribute it and/or modify  */
 /* it under the terms of the GNU General Public License as published by  */
@@ -47,6 +47,7 @@ void  listPushFront (List root,  void* val);
 void  listPushSort  (List root,  void* val, int (*compare)(const void*, const void*));
 List  listAddAfter  (List root,  List place, void* val);
 void  listFree      (List root);
+void  listFreeDeep  (List root);
 List  listGet       (List root,  int n);
 List  listGetVal    (List root,  void* val, int (*compare)(const void*, const void*));
 void  listRemove    (List root,  List element);

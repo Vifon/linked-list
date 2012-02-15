@@ -1,6 +1,6 @@
 /* File: list.c */
 /*************************************************************************/
-/* Copyright (C) 2011  Wojciech Siewierski                               */
+/* Copyright (C) 2011-2012  Wojciech Siewierski                          */
 /*                                                                       */
 /* This program is free software: you can redistribute it and/or modify  */
 /* it under the terms of the GNU General Public License as published by  */
@@ -31,10 +31,27 @@ List listInit(void)
 
 void listFree(List root)
 {
-    if (root == NULL)
-        return;
-    listFree(root->n);
-    free(root);
+    List it1 = root;
+    List it2;
+    while (it1 != NULL)
+    {
+        it2 = it1;
+        it1 = listNext(it1);
+        free(it2);
+    }
+}
+
+void listFreeDeep(List root)
+{
+    List it1 = root;
+    List it2;
+    while (it1 != NULL)
+    {
+        it2 = it1;
+        it1 = listNext(it1);
+        free(it2->v);
+        free(it2);
+    }
 }
 
 void listPushBack(List root, void* val)
@@ -153,6 +170,7 @@ void listEmpty(List root)
 {
     listFree(root->n);
     root->n = NULL;
+    root->p = NULL;
 }
 
 void* listPopBack(List root)
