@@ -1,0 +1,200 @@
+=encoding utf-8
+
+=head1 NAME
+
+list.h - type agnostic general purpose double linked list
+
+=head1 SYNOPSIS
+
+    #include <list.h>
+
+    List  listInit      (void);
+
+    void  listPushBack  (List root,  void* val);
+    void  listPushFront (List root,  void* val);
+    void  listPushSort  (List root,  void* val, int (*compare)(const void*, const void*));
+    List  listAddAfter  (List root,  List place, void* val);
+
+    void  listFree      (List root);
+    void  listFreeDeep  (List root);
+
+    List  listGet       (List root,  int n);
+    List  listGetVal    (List root,  void* val, int (*compare)(const void*, const void*));
+    type  listVal       (List element, type);
+    type* listRef       (List element, type);
+
+    void  listRemove    (List root,  List element);
+    int   listRemoveN   (List root,  int n);
+    int   listRemoveVal (List root,  void* val, int (*compare)(const void*, const void*));
+
+    int   listLength    (List root);
+    int   listIsEmpty   (List root);
+
+    void  listEmpty     (List root);
+    void* listPopBack   (List root);
+    void* listPopFront  (List root);
+
+    List  listCopy      (List source);
+    void  listForeach   (List root, void (*fun)(void*, void*), void* arg);
+    int   listSwap      (List root, List place);
+    void  listSort      (List root, int (*cmp)(const void*, const void*));
+
+    List  listNext      (List iterator);
+    List  listPrev      (List iterator);
+    List  listBegin     (List root);
+    List  listRBegin    (List root);
+
+Link with I<-llist>.
+
+=head1 DESCRIPTION
+
+=head2 Creating and deleting lists
+
+Every list must be initialized with I<listInit> C<List new_list = listInit();>
+
+Every initialized list must be freed with I<listFree>. After this operation it
+may be reinitialized with I<listInit>.
+
+If you want to free the elements themselves too, not just the nodes, use
+I<listFreeDeep>.
+
+=head2 Adding new elements
+
+There are four main functions used to add new elements to the list:
+
+=over 2
+
+=item * I<listPushBack>
+
+adds new element to the end of a list
+
+=item * I<listPushFront>
+
+adds new element to the beginning of a list
+
+=item * I<listPushSort>
+
+adds new element to a sorted list using the specified comparison function (see
+section: L<Comparison functions>)
+
+=item * I<listAddAfter>
+
+adds new element after the specified element; returns the new node
+
+=back
+
+These functions do B<not> copy the elements so you probably want to allocate the
+memory for these elements on heap (see: L<malloc(3)>).
+
+    List list = listInit();
+    int* a = (int*)malloc(sizeof(int));
+    *a = 5;
+    listPushBack(list, a);
+
+=head2 Accessing elements
+
+You can either access elements by iterating throught the list (see section:
+L<Iterators>) or using I<listGet> and I<listGetVal>.
+
+I<listGet> returns the nth element. I<listGetVal> returns the element for which
+the comparison function will return 0.
+
+These functions return the list node. Use I<listVal> to get the value and
+I<listRef> to get the pointer to the element.
+
+=head2 Removing elements
+
+I<listRemove> removes the pointed list node, I<listRemoveN> removes the nth list
+node (basically C<listRemove(list, listGet(list, n))>) and I<listRemoveVal>
+removes the element matching the pointed one judging by the comparison
+function. The two latter functions return 1 on succsess and 0 on failure.
+
+I<listEmpty> frees all the nodes except the head (which does not hold any
+value). The list does have to be reinitialized and still will need to be freed
+with I<listFree>.
+
+I<listPopBack> and I<listPopFront> delete the first/last node of the list and
+return pointer to the value it was holding.
+
+Protip: you can move a value from one list to another with this snippet
+
+    listPushBack(list2, listPopBack(list1));
+
+=head2 Comparison functions
+
+All the comparison functions return an integer less than, equal to, or greater than zero if arg1 is found, respectively, to be less than, to match, or be greater than arg2.
+
+=head2 Iterators
+
+To iterate throught the list, use these functions:
+
+=over 2
+
+=item * I<listBegin>
+
+returns a list iterator to the beginning of the list
+
+=item * I<listRBegin>
+
+returns a list iterator to the end of the list
+
+=item * I<listNext>
+
+returns the node after the one pointed one
+
+=item * I<listPrev>
+
+returns the node before the one pointed one
+
+=back
+
+For example, this code will print out all elements in a list of integers:
+
+    List it;
+    for (it = listBegin(list); it != NULL; it = listNext(it))
+        printf("%d\n", listVal(it, int));
+
+=head2 Miscellaneous
+
+I<listCopy> returns a shallow copy of a list.
+
+I<listForeach> will apply a function to every element of a list. The first
+argument of that function is a pointer to the element and the second one is the
+I<arg> argument.
+
+I<listSwap> swaps the pointed node's value with the following node's value. The
+node themselves are not swapped. Returns 1 on success (i.e. it was not the last
+element), 0 otherwise.
+
+I<listSort> uses a modified version of Simon Tatham's merge sort for lists.
+
+I<listLength> is pretty self-describing.
+
+I<listIsEmpty> returns 1 if the list contains only an empty head. The list must
+be initialized!
+
+=head1 AUTHOR
+
+Wojciech 'vifon' Siewierski <wojciech dot siewierski at gmail dot com>
+
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to Simon Tatham for his merge sort algorithm for linked lists.
+L<http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html>
+
+=head1 COPYRIGHT
+
+Copyright (C) 2011-2012  Wojciech Siewierski
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
