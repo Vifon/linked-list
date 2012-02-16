@@ -12,7 +12,7 @@ endif()
 
 add_custom_command(
   OUTPUT  list.3.gz
-  COMMAND pod2man --utf8 --name=list --section=3 ${CMAKE_CURRENT_SOURCE_DIR}/README.pod -o list.3
+  COMMAND pod2man --utf8 --name=list --section=3 --center " " ${CMAKE_CURRENT_SOURCE_DIR}/README.pod list.3
   COMMAND gzip -f list.3
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/README.pod
   COMMENT "Generating manpage"
